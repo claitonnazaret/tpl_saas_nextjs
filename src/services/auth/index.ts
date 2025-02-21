@@ -29,7 +29,7 @@ export const {
           name: 'Client User',
           username: 'client',
           email: 'client@gmail.com',
-          roles: ['admin'],
+          roles: ['client'],
         }
 
         const user = [admin, client].find(
@@ -41,7 +41,6 @@ export const {
   ],
   session: {
     strategy: 'jwt',
-    maxAge: 0.5 * 60,
   },
 
   callbacks: {

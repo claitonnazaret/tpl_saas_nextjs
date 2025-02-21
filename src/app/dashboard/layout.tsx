@@ -1,11 +1,17 @@
-export default function DashboardLayout({
+import { Logout } from './_components/logout'
+
+import { auth } from '@/services/auth'
+
+export default async function DashboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const session = await auth()
   return (
     <>
-      <h1>Dashboard Layout</h1>
+      <Logout />
+      <pre>{JSON.stringify(session?.user, null, 2)}</pre>
       {children}
     </>
   )
