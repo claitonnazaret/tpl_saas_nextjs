@@ -1,5 +1,7 @@
 import { ThemeProvider } from '@/components/theme/theme-provider'
+import { auth } from '@/services/auth'
 import type { Metadata } from 'next'
+import { SessionProvider } from 'next-auth/react'
 import { Roboto, Roboto_Mono } from 'next/font/google'
 import './globals.css'
 
@@ -22,24 +24,27 @@ export const metadata: Metadata = {
   description: APP_DESCRIPTION,
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const session = await auth()
   return (
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${robotoSans.variable} ${robotoMono.variable} antialiased`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
+        <SessionProvider session={session}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+        </SessionProvider>
       </body>
     </html>
   )

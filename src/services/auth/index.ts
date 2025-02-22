@@ -1,20 +1,8 @@
 import { prisma } from '@/services/database'
 import { PrismaAdapter } from '@auth/prisma-adapter'
-import { compareSync } from 'bcryptjs'
-import NextAuth, { CredentialsSignin } from 'next-auth'
+import NextAuth from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
-
-class InvalidCredentialsError extends CredentialsSignin {
-  code = 'Invalid credentials'
-}
-
-class UserNotFoundError extends CredentialsSignin {
-  code = 'User not found'
-}
-
-class PasswordMismatchError extends CredentialsSignin {
-  code = 'Invalid password'
-}
+import { findUserAuthorization, InvalidCredentialsError } from './user'
 
 export const {
   handlers: { GET, POST },
@@ -43,41 +31,13 @@ export const {
           throw new InvalidCredentialsError('Email and password are required')
         }
 
-        // Try to find the user in the database
-        const user = await prisma.user.findUnique({
-          where: { email: email as string },
-          include: {
-            userRoles: {
-              include: {
-                role: {
-                  select: {
-                    name: true,
-                  },
-                },
-              },
-            },
-          },
-        })
-
-        if (!user) {
-          throw new UserNotFoundError('User not found with the provided email')
-        }
-
-        const passwordMatch = compareSync(password, user.password as string)
-
-        if (!passwordMatch) {
-          throw new PasswordMismatchError('The password provided is incorrect')
-        }
-        const { userRoles, ...userWithoutRoles } = user
-        return {
-          ...userWithoutRoles,
-          roles: userRoles.map((userRole) => userRole.role.name),
-        }
+        return findUserAuthorization({ email, password })
       },
     }),
   ],
   session: {
     strategy: 'jwt',
+    maxAge: 24 * 60 * 60, // 24 horas
   },
 
   callbacks: {

@@ -2,22 +2,32 @@ import { auth } from '@/services/auth'
 import { NextResponse } from 'next/server'
 
 const PRIVATE_URL = '/dashboard'
-const protectedRoutes = [PRIVATE_URL]
+const publicRoutes = ['/', '/api/auth/signin']
 
 export default auth((req) => {
   const { pathname } = req.nextUrl
 
-  const isProtectedRoute = protectedRoutes.includes(pathname)
+  const isPublic = publicRoutes.includes(pathname)
 
-  if (isProtectedRoute && !req.auth) {
-    return NextResponse.redirect(new URL('/', req.nextUrl))
+  if (!req.auth && isPublic) {
+    return NextResponse.next()
   }
 
-  if (!isProtectedRoute && req.auth) {
-    return NextResponse.redirect(new URL(PRIVATE_URL, req.nextUrl))
+  if (!req.auth && !isPublic) {
+    const redirectUrl = req.nextUrl.clone()
+    redirectUrl.pathname = '/'
+    return NextResponse.redirect(redirectUrl)
   }
 
-  return NextResponse.next()
+  if (req.auth && isPublic) {
+    const redirectUrl = req.nextUrl.clone()
+    redirectUrl.pathname = PRIVATE_URL
+    return NextResponse.redirect(redirectUrl)
+  }
+
+  if (req.auth && !isPublic) {
+    return NextResponse.next()
+  }
 })
 
 export const config = {
