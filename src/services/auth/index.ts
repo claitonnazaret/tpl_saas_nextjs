@@ -1,8 +1,19 @@
+import { prisma } from '@/services/database'
+import { PrismaAdapter } from '@auth/prisma-adapter'
+import { compareSync } from 'bcryptjs'
 import NextAuth, { CredentialsSignin } from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 
-class InvalidLoginError extends CredentialsSignin {
-  code = 'Invalid identifier or password'
+class InvalidCredentialsError extends CredentialsSignin {
+  code = 'Invalid credentials'
+}
+
+class UserNotFoundError extends CredentialsSignin {
+  code = 'User not found'
+}
+
+class PasswordMismatchError extends CredentialsSignin {
+  code = 'Invalid password'
 }
 
 export const {
@@ -12,30 +23,56 @@ export const {
   pages: {
     newUser: '/dashboard',
   },
+  adapter: PrismaAdapter(prisma),
   providers: [
     Credentials({
       credentials: {
-        username: { label: 'Username', placeholder: '' },
-        password: { label: 'Password', type: 'password' },
+        email: {
+          label: 'Email',
+          placeholder: 'Digite seu email',
+          value: 'claitonnazaret@gmail.com',
+        },
+        password: { label: 'Password', type: 'password', value: 'admin123' },
       },
       async authorize(credentials) {
-        const admin = {
-          name: 'Admin User',
-          username: 'admin',
-          email: 'admin@gmail.com',
-          roles: ['admin', 'client'],
+        const { email, password } = credentials as {
+          email: string
+          password: string
         }
-        const client = {
-          name: 'Client User',
-          username: 'client',
-          email: 'client@gmail.com',
-          roles: ['client'],
+        if (!email || !password) {
+          throw new InvalidCredentialsError('Email and password are required')
         }
 
-        const user = [admin, client].find(
-          ({ username }) => username === credentials.username,
-        )
-        return user || new InvalidLoginError()
+        // Try to find the user in the database
+        const user = await prisma.user.findUnique({
+          where: { email: email as string },
+          include: {
+            userRoles: {
+              include: {
+                role: {
+                  select: {
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
+        })
+
+        if (!user) {
+          throw new UserNotFoundError('User not found with the provided email')
+        }
+
+        const passwordMatch = compareSync(password, user.password as string)
+
+        if (!passwordMatch) {
+          throw new PasswordMismatchError('The password provided is incorrect')
+        }
+        const { userRoles, ...userWithoutRoles } = user
+        return {
+          ...userWithoutRoles,
+          roles: userRoles.map((userRole) => userRole.role.name),
+        }
       },
     }),
   ],
