@@ -15,7 +15,6 @@ import { User as UserIcon } from 'lucide-react'
 import { User } from 'next-auth'
 import { signOut } from 'next-auth/react'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
-import { Table, TableBody, TableCell, TableRow } from '../ui/table'
 
 export default function NavUser({ user }: { user: User | undefined }) {
   return (
@@ -40,14 +39,10 @@ export default function NavUser({ user }: { user: User | undefined }) {
           </DrawerHeader>
           <div className="p-4 pb-0">
             <div className="flex flex-col gap-2">
-              <Table>
-                <TableBody>
-                  <TableRow>
-                    <TableCell className="font-bold">Email: </TableCell>
-                    <TableCell>{user?.email}</TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
+              <div className="flex flex-row gap-2">
+                <span className="font-bold">Email:</span>
+                <span>{user?.email}</span>
+              </div>
             </div>
           </div>
           <DrawerFooter>

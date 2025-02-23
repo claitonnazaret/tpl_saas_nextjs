@@ -1,4 +1,6 @@
 import { ThemeProvider } from '@/components/theme/theme-provider'
+
+import { Toaster } from '@/components/ui/sonner'
 import { auth } from '@/services/auth'
 import type { Metadata } from 'next'
 import { SessionProvider } from 'next-auth/react'
@@ -38,11 +40,12 @@ export default async function RootLayout({
         <SessionProvider session={session}>
           <ThemeProvider
             attribute="class"
-            defaultTheme="light"
+            defaultTheme="system"
             enableSystem
             disableTransitionOnChange
           >
             {children}
+            <Toaster />
           </ThemeProvider>
         </SessionProvider>
       </body>

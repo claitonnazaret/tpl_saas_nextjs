@@ -10,9 +10,8 @@ import {
   SidebarRail,
 } from '@/components/ui/sidebar'
 import { textFallback, urlDashboard } from '@/lib/utils'
-import { Avatar } from '@radix-ui/react-avatar'
 import { CircleUserRound, Settings } from 'lucide-react'
-import { AvatarFallback, AvatarImage } from '../ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { NavMain } from './nav-main'
 
 export function AppSidebar() {
@@ -21,16 +20,26 @@ export function AppSidebar() {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" className="pointer-events-none w-full">
-              <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage alt={'Nome da Empresa'} />
-                <AvatarFallback className="rounded-lg">
-                  {textFallback('Empresa x')}
-                </AvatarFallback>
-              </Avatar>
-              <span className="truncate text-[20px] font-bold uppercase">
-                {'empresa x'}
-              </span>
+            <SidebarMenuButton size="lg" asChild>
+              <a href="#">
+                {/* <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+                  <GalleryVerticalEnd className="size-4" />
+                </div> */}
+                <Avatar className="h-10 rounded-lg bg-foreground">
+                  <AvatarImage
+                    alt={'Nome da Empresa'}
+                    src="https://jsonplaceholder.typicode.com/mockend.svg?height=200&width=400"
+                  />
+                  <AvatarFallback className="rounded-lg">
+                    {textFallback('Nome da Empresa')}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col gap-0.5 leading-none">
+                  <span className="justify-center text-center text-[20px] font-semibold uppercase">
+                    Nome da Empresa
+                  </span>
+                </div>
+              </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

@@ -11,7 +11,7 @@ export default function Navbar() {
   const router = useRouter()
 
   const handleSignIn = () => {
-    router.push('/api/auth/signin')
+    router.push('/login')
   }
   return (
     <motion.nav
