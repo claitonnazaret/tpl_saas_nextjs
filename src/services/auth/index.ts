@@ -2,35 +2,32 @@ import { prisma } from '@/services/database'
 import { PrismaAdapter } from '@auth/prisma-adapter'
 import NextAuth from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
-import { findUserAuthorization, InvalidCredentialsError } from './user'
+import { findUserAuthorization } from './user'
 
 export const {
   handlers: { GET, POST },
   auth,
 } = NextAuth({
   pages: {
+    signIn: '/login',
+    signOut: '/',
+    error: '/login',
+    verifyRequest: '/login',
     newUser: '/dashboard',
   },
   adapter: PrismaAdapter(prisma),
   providers: [
     Credentials({
+      name: 'credentials',
       credentials: {
-        email: {
-          label: 'Email',
-          placeholder: 'Digite seu email',
-          value: 'claitonnazaret@gmail.com',
-        },
-        password: { label: 'Password', type: 'password', value: 'admin123' },
+        email: { label: 'Email', type: 'text' },
+        password: { label: 'Password', type: 'password' },
       },
-      async authorize(credentials) {
+      authorize: async (credentials) => {
         const { email, password } = credentials as {
           email: string
           password: string
         }
-        if (!email || !password) {
-          throw new InvalidCredentialsError('Email and password are required')
-        }
-
         return findUserAuthorization({ email, password })
       },
     }),
