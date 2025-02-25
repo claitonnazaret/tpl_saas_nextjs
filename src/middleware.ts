@@ -1,4 +1,4 @@
-import { auth } from '@/services/auth'
+import { auth } from '@/services/auth.service'
 import { NextResponse } from 'next/server'
 
 const PRIVATE_URL = '/dashboard'

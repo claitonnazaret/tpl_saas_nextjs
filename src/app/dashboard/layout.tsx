@@ -9,7 +9,7 @@ import { AppSidebar } from '@/components/dashboard/app-sidebar'
 import NavUser from '@/components/dashboard/nav-user'
 import { ThemeToggle } from '@/components/theme/theme-toggle'
 import { Separator } from '@/components/ui/separator'
-import { auth } from '@/services/auth'
+import { auth } from '@/services/auth.service'
 import { cookies } from 'next/headers'
 
 export default async function DashboardLayout({

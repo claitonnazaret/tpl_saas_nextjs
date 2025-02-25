@@ -1,15 +1,8 @@
-import { auth } from '@/services/auth'
-import { fetchDashboard } from '@/services/dashboard'
+import getAllProducts from '@/services/product.service'
+import { DashboardDataTable } from './_components/table'
 
 export default async function Dashboard() {
-  const session = await auth()
+  const products = await getAllProducts()
 
-  const posts = await fetchDashboard()
-
-  return (
-    <>
-      <div>Dashboard</div>
-      <pre>{JSON.stringify(posts, null, 2)}</pre>
-    </>
-  )
+  return <DashboardDataTable data={products} />
 }

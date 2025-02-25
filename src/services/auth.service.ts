@@ -1,8 +1,8 @@
-import { prisma } from '@/services/database'
+import { prisma } from '@/services/database.service'
 import { PrismaAdapter } from '@auth/prisma-adapter'
 import NextAuth from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
-import { findUserAuthorization } from './user'
+import { findUserAuthorization } from './user.service'
 
 export const {
   handlers: { GET, POST },

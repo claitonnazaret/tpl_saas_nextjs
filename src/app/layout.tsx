@@ -1,7 +1,7 @@
 import { ThemeProvider } from '@/components/theme/theme-provider'
 
 import { Toaster } from '@/components/ui/sonner'
-import { auth } from '@/services/auth'
+import { auth } from '@/services/auth.service'
 import type { Metadata } from 'next'
 import { SessionProvider } from 'next-auth/react'
 import { Roboto, Roboto_Mono } from 'next/font/google'

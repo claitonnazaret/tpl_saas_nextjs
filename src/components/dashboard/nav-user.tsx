@@ -1,57 +1,71 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from '@/components/ui/drawer'
 import { textFallback } from '@/lib/utils'
-import { User as UserIcon } from 'lucide-react'
+import { UserIcon } from 'lucide-react'
 import { User } from 'next-auth'
-import { signOut } from 'next-auth/react'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
+import { Input } from '../ui/input'
+import { Label } from '../ui/label'
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '../ui/sheet'
 
 export default function NavUser({ user }: { user: User | undefined }) {
   return (
-    <Drawer direction="right">
-      <DrawerTrigger asChild>
-        <Button variant="outline" size="icon">
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button variant="outline" size="icon" aria-label="Editar Perfil">
           <UserIcon />
         </Button>
-      </DrawerTrigger>
-      <DrawerContent className="fixed bottom-0 left-auto top-0 z-50 mt-0 w-[20rem] rounded-t-none">
-        <div className="flex w-full grow flex-col rounded-[16px] p-5">
-          <DrawerHeader className="flex flex-col items-center gap-2">
-            <DrawerDescription>
-              <Avatar className="h-20 w-20 rounded-lg">
-                <AvatarImage src={user?.image || ''} />
-                <AvatarFallback className="rounded-lg">
-                  {textFallback(user?.name)}
-                </AvatarFallback>
-              </Avatar>
-            </DrawerDescription>
-            <DrawerTitle>{user?.name}</DrawerTitle>
-          </DrawerHeader>
-          <div className="p-4 pb-0">
-            <div className="flex flex-col gap-2">
-              <div className="flex flex-row gap-2">
-                <span className="font-bold">Email:</span>
-                <span>{user?.email}</span>
-              </div>
-            </div>
+      </SheetTrigger>
+      <SheetContent>
+        <SheetHeader>
+          <SheetTitle className="text-center">Perfil do usuário</SheetTitle>
+          <SheetDescription className="flex justify-center">
+            <Avatar className="h-20 w-20 rounded-lg">
+              <AvatarImage src={user?.image || ''} />
+              <AvatarFallback className="rounded-lg">
+                {textFallback(user?.name)}
+              </AvatarFallback>
+            </Avatar>
+          </SheetDescription>
+        </SheetHeader>
+        <div className="grid w-full gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              Nome
+            </Label>
+            <Input
+              id="name"
+              value={user?.name as string}
+              className="col-span-3"
+            />
           </div>
-          <DrawerFooter>
-            <Button variant="destructive" onClick={() => signOut()}>
-              Sign Out
-            </Button>
-          </DrawerFooter>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="username" className="text-right">
+              Email
+            </Label>
+            <Input
+              id="username"
+              value={user?.email as string}
+              className="col-span-3"
+            />
+          </div>
         </div>
-      </DrawerContent>
-    </Drawer>
+        <SheetFooter>
+          <SheetClose asChild>
+            <Button type="submit">Salvar alterações</Button>
+          </SheetClose>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
   )
 }

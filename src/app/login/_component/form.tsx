@@ -17,10 +17,10 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 
 const formSchema = z.object({
-  email: z.string().email({
+  email: z.string().nonempty({ message: 'Digite seu email' }).email({
     message: 'Digite um email válido',
   }),
-  password: z.string().min(1, {
+  password: z.string().nonempty({
     message: 'Digite sua senha',
   }),
 })

@@ -1,4 +1,4 @@
-import { prisma } from '@/services/database'
+import { prisma } from '@/services/database.service'
 import { User } from '@prisma/client'
 import { compareSync } from 'bcryptjs'
 import { CredentialsSignin } from 'next-auth'
